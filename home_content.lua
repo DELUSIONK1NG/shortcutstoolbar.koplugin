@@ -575,7 +575,25 @@ createHomeContent = function(menu, config, reset_fn)
     if config.view ~= "fb" and config.show_back_button ~= false then
         local chevron_size  = Screen:scaleBySize(14)
         local back_callback = function()
+            -- 1. Close the shortcut toolbar menu container first so it doesn't get stuck
             if menu.close_callback then menu.close_callback() end
+
+            -- 2. If configured, try to hand off to the Bookshelf plugin's safe-show
+            if config and config.back_to_bookshelf then
+                local bookshelf_plugin = PluginLoader:getPluginInstance("bookshelf")
+                if bookshelf_plugin and bookshelf_plugin._safeShow then
+                    -- Inject our reader UI context (if the plugin expects it)
+                    local ok, ReaderUI = pcall(require, "apps/reader/readerui")
+                    if ok and ReaderUI.instance then
+                        bookshelf_plugin.ui = ReaderUI.instance
+                    end
+                    -- Use the plugin's engineered safe-exit path
+                    bookshelf_plugin:_safeShow()
+                    return
+                end
+            end
+
+            -- 3. Fallback: standard reader home behaviour (file browser)
             local ReaderUI = require("apps/reader/readerui")
             if ReaderUI.instance then
                 ReaderUI.instance:onHome()

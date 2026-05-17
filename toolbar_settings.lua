@@ -42,6 +42,9 @@ function M.readConfig(view, options)
         result.show_book_info = stored.show_book_info ~= false
         result.show_time_and_battery = stored.show_time_and_battery ~= false
         result.show_back_button = stored.show_back_button ~= false
+        -- Whether the back button should prefer opening the Bookshelf plugin
+        -- when available. Default is false (go to file browser/home).
+        result.back_to_bookshelf = stored.back_to_bookshelf == true
     elseif view == "fb" then
         result.placement = stored.placement or "persistent"
         result.align = "center"
@@ -96,6 +99,7 @@ function M.saveConfig(view, cfg)
         stored.show_book_info = cfg.show_book_info
         stored.show_time_and_battery = cfg.show_time_and_battery
         stored.show_back_button = cfg.show_back_button
+        stored.back_to_bookshelf = cfg.back_to_bookshelf
     elseif view == "fb" then
         stored.placement = cfg.placement
     end
