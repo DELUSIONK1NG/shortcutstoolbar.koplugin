@@ -333,6 +333,15 @@ function ShortcutsToolbar:addToMainMenu(menu_items)
                         end,
                     },
                     {
+                        -- Toggle whether the back button goes to Bookshelf plugin (if available)
+                        text         = _("Back button opens Bookshelf when available"),
+                        checked_func = function() return reader_config.back_to_bookshelf end,
+                        callback     = function()
+                            reader_config.back_to_bookshelf = not reader_config.back_to_bookshelf
+                            ToolbarSettings.saveConfig("reader", reader_config)
+                        end,
+                    },
+                    {
                         text_func      = function()
                             return T(_("Icon size: %1"), reader_config.icon_size)
                         end,
